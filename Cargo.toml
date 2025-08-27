@@ -1,6 +1,6 @@
 [package]
 name = "ds3231-rtc"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2024"
 authors = ["ImplFerris"]
 description = "A no_std driver for the DS3231 Real Time Clock (RTC) module"

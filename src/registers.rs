@@ -1,6 +1,6 @@
-//! DS1307 Registers
+//! DS3231 Registers
 
-/// DS1307 Registers
+/// DS3231 Registers
 #[repr(u8)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Register {

@@ -4,7 +4,7 @@ use embedded_hal::i2c::I2c;
 
 use crate::{error::Error, registers::Register};
 
-/// DS1307 I2C device address (fixed)
+/// DS3231 I2C device address (fixed)
 pub const I2C_ADDR: u8 = 0x68;
 
 /// Default base century for year calculations (2000-2099).
@@ -78,14 +78,14 @@ where
         self.i2c
     }
 
-    /// Write a single byte to a DS1307 register
+    /// Write a single byte to a DS3231 register
     pub(crate) fn write_register(&mut self, register: Register, value: u8) -> Result<(), Error<E>> {
         self.i2c.write(I2C_ADDR, &[register.addr(), value])?;
 
         Ok(())
     }
 
-    /// Read a single byte from a DS1307 register
+    /// Read a single byte from a DS3231 register
     pub(crate) fn read_register(&mut self, register: Register) -> Result<u8, Error<E>> {
         let mut data = [0u8; 1];
         self.i2c
@@ -95,7 +95,7 @@ where
         Ok(data[0])
     }
 
-    /// Read multiple bytes from DS1307 starting at a register
+    /// Read multiple bytes from DS3231 starting at a register
     pub(crate) fn read_register_bytes(
         &mut self,
         register: Register,
@@ -106,7 +106,7 @@ where
         Ok(())
     }
 
-    // Read multiple bytes from DS1307 starting at a raw address
+    // Read multiple bytes from DS3231 starting at a raw address
     // pub(crate) fn read_bytes_at_address(
     //     &mut self,
     //     register_addr: u8,
@@ -117,7 +117,7 @@ where
     //     Ok(())
     // }
 
-    /// Write raw bytes directly to DS1307 via I2C (register address must be first byte)
+    /// Write raw bytes directly to DS3231 via I2C (register address must be first byte)
     pub(crate) fn write_raw_bytes(&mut self, data: &[u8]) -> Result<(), Error<E>> {
         self.i2c.write(I2C_ADDR, data).map_err(Error::I2c)
     }
@@ -129,7 +129,7 @@ where
     /// the register value would actually change, optimizing I2C bus usage.
     ///
     /// # Parameters
-    /// - `register`: The DS1307 register to modify
+    /// - `register`: The DS3231 register to modify
     /// - `mask`: Bit mask where `1` bits will be set, `0` bits will be ignored
     ///
     /// # Example
@@ -162,7 +162,7 @@ where
     /// the register value would actually change, optimizing I2C bus usage.
     ///
     /// # Parameters
-    /// - `register`: The DS1307 register to modify
+    /// - `register`: The DS3231 register to modify
     /// - `mask`: Bit mask where `1` bits will be cleared, `0` bits will be ignored
     ///
     /// # Example
