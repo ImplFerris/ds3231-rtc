@@ -31,6 +31,8 @@ impl Register {
 }
 
 /// Control register (0x0E) bit flags
+/// Enable Oscillator
+pub const EOSC_BIT: u8 = 1 << 7;
 ///  Interrupt Control
 pub const INTCN_BIT: u8 = 1 << 2;
 /// Rate Select mask

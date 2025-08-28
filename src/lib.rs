@@ -4,6 +4,7 @@
 #![warn(missing_docs)]
 #![cfg_attr(not(doctest), doc = include_str!("../README.md"))]
 
+pub mod control;
 pub mod datetime;
 mod ds3231;
 pub mod error;
