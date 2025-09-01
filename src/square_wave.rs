@@ -10,7 +10,6 @@
 //! Note: The DS3231's dedicated 32 kHz output pin is not controlled by this
 //! implementation, only the configurable INT/SQW pin frequencies.
 
-use embedded_hal::i2c::I2c;
 pub use rtc_hal::square_wave::SquareWave;
 pub use rtc_hal::square_wave::SquareWaveFreq;
 
@@ -21,7 +20,10 @@ use crate::registers::{INTCN_BIT, RS_MASK, Register};
 /// Convert a [`SquareWaveFreq`] into the corresponding Ds3231 RS bits.
 ///
 /// Returns an error if the frequency is not supported by the Ds3231.
-fn freq_to_bits<E>(freq: SquareWaveFreq) -> Result<u8, Error<E>> {
+fn freq_to_bits<E>(freq: SquareWaveFreq) -> Result<u8, Error<E>>
+where
+    E: core::fmt::Debug,
+{
     match freq {
         SquareWaveFreq::Hz1 => Ok(0b0000_0000),
         SquareWaveFreq::Hz1024 => Ok(0b0000_1000),
@@ -31,9 +33,9 @@ fn freq_to_bits<E>(freq: SquareWaveFreq) -> Result<u8, Error<E>> {
     }
 }
 
-impl<I2C, E> SquareWave for Ds3231<I2C>
+impl<I2C> SquareWave for Ds3231<I2C>
 where
-    I2C: I2c<Error = E>,
+    I2C: embedded_hal::i2c::I2c,
 {
     /// Enable the square wave output
     fn enable_square_wave(&mut self) -> Result<(), Self::Error> {

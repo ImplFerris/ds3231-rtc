@@ -25,7 +25,6 @@
 //! power, making it primarily useful for extending battery life rather than general
 //! clock control.
 
-use embedded_hal::i2c::I2c;
 pub use rtc_hal::control::RtcPowerControl;
 
 use crate::{
@@ -33,9 +32,9 @@ use crate::{
     registers::{EOSC_BIT, Register},
 };
 
-impl<I2C, E> RtcPowerControl for Ds3231<I2C>
+impl<I2C> RtcPowerControl for Ds3231<I2C>
 where
-    I2C: I2c<Error = E>,
+    I2C: embedded_hal::i2c::I2c,
 {
     /// Start or resume the RTC oscillator so that timekeeping can continue.
     ///

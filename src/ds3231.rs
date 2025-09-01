@@ -18,9 +18,14 @@ pub struct Ds3231<I2C> {
     pub(crate) base_century: u8,
 }
 
+impl<I2C: embedded_hal::i2c::I2c> rtc_hal::error::ErrorType for Ds3231<I2C> {
+    type Error = crate::error::Error<I2C::Error>;
+}
+
 impl<I2C, E> Ds3231<I2C>
 where
     I2C: I2c<Error = E>,
+    E: core::fmt::Debug,
 {
     /// Create a new DS3231 driver instance
     ///
