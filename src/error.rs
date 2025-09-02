@@ -7,6 +7,7 @@ use rtc_hal::datetime::DateTimeError;
 
 /// DS3231 driver errors
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub enum Error<I2cError>
 where
     I2cError: core::fmt::Debug,
@@ -30,7 +31,7 @@ where
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         match self {
             Error::I2c(e) => write!(f, "I2C communication error: {e}"),
-            Error::InvalidAddress => write!(f, "Invalid NVRAM address"),
+            Error::InvalidAddress => write!(f, "Invalid register address"),
             Error::DateTime(e) => write!(f, "Invalid date/time values: {e}"),
             Error::UnsupportedSqwFrequency => write!(f, "Unsupported square wave frequency"),
             Error::InvalidBaseCentury => write!(f, "Base century must be 19 or greater"),
@@ -66,37 +67,6 @@ where
             Error::DateTime(_) => rtc_hal::error::ErrorKind::InvalidDateTime,
             Error::UnsupportedSqwFrequency => rtc_hal::error::ErrorKind::UnsupportedSqwFrequency,
             Error::InvalidBaseCentury => rtc_hal::error::ErrorKind::InvalidDateTime,
-        }
-    }
-}
-
-/// Implements [`defmt::Format`] for [`Error<I2cError>`].
-///
-/// This enables the error type to be formatted efficiently when logging
-/// with the `defmt` framework in `no_std` environments.
-///
-/// The implementation is only available when the `defmt` feature is enabled
-/// and requires that the underlying `I2cError` type also implements
-/// [`core::fmt::Debug`].
-///
-/// Each variant is printed with a short, human-readable description,
-/// and the `I2c` variant includes the inner I2C error.
-#[cfg(feature = "defmt")]
-impl<I2cError> defmt::Format for Error<I2cError>
-where
-    I2cError: core::fmt::Debug,
-{
-    fn format(&self, f: defmt::Formatter) {
-        match self {
-            Error::I2c(e) => {
-                defmt::write!(f, "I2C communication error: {:?}", defmt::Debug2Format(e))
-            }
-            Error::InvalidAddress => defmt::write!(f, "Invalid NVRAM address"),
-            Error::DateTime(_) => defmt::write!(f, "Invalid date/time values"),
-            Error::UnsupportedSqwFrequency => defmt::write!(f, "Unsupported Square Wave Frequency"),
-            Error::InvalidBaseCentury => {
-                defmt::write!(f, "Base century must be 19 or greater")
-            }
         }
     }
 }
@@ -161,7 +131,7 @@ mod tests {
                 }),
                 "I2C communication error: I2C Error 1: test",
             ),
-            (Error::InvalidAddress, "Invalid NVRAM address"),
+            (Error::InvalidAddress, "Invalid register address"),
             (
                 Error::DateTime(DateTimeError::InvalidMonth),
                 "Invalid date/time values: invalid month",
