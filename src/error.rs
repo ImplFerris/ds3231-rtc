@@ -23,6 +23,26 @@ where
     InvalidBaseCentury,
 }
 
+impl<I2cError> core::fmt::Display for Error<I2cError>
+where
+    I2cError: core::fmt::Debug + core::fmt::Display,
+{
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        match self {
+            Error::I2c(e) => write!(f, "I2C communication error: {e}"),
+            Error::InvalidAddress => write!(f, "Invalid NVRAM address"),
+            Error::DateTime(e) => write!(f, "Invalid date/time values: {e}"),
+            Error::UnsupportedSqwFrequency => write!(f, "Unsupported square wave frequency"),
+            Error::InvalidBaseCentury => write!(f, "Base century must be 19 or greater"),
+        }
+    }
+}
+
+impl<I2cError> core::error::Error for Error<I2cError> where
+    I2cError: core::fmt::Debug + core::fmt::Display
+{
+}
+
 // /// Converts an [`I2cError`] into an [`Error`] by wrapping it in the
 // /// [`Error::I2c`] variant.
 // ///
@@ -117,5 +137,47 @@ mod tests {
         // InvalidBaseCentury
         let e: Error<&str> = Error::InvalidBaseCentury;
         assert_eq!(e.kind(), ErrorKind::InvalidDateTime);
+    }
+
+    #[derive(Debug, PartialEq, Eq)]
+    struct MockI2cError {
+        code: u8,
+        message: &'static str,
+    }
+
+    impl core::fmt::Display for MockI2cError {
+        fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+            write!(f, "I2C Error {}: {}", self.code, self.message)
+        }
+    }
+
+    #[test]
+    fn test_display_all_variants() {
+        let errors = vec![
+            (
+                Error::I2c(MockI2cError {
+                    code: 1,
+                    message: "test",
+                }),
+                "I2C communication error: I2C Error 1: test",
+            ),
+            (Error::InvalidAddress, "Invalid NVRAM address"),
+            (
+                Error::DateTime(DateTimeError::InvalidMonth),
+                "Invalid date/time values: invalid month",
+            ),
+            (
+                Error::UnsupportedSqwFrequency,
+                "Unsupported square wave frequency",
+            ),
+            (
+                Error::InvalidBaseCentury,
+                "Base century must be 19 or greater",
+            ),
+        ];
+
+        for (error, expected) in errors {
+            assert_eq!(format!("{error}"), expected);
+        }
     }
 }

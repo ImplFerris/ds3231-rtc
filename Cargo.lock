@@ -224,9 +224,9 @@ dependencies = [
 
 [[package]]
 name = "rtc-hal"
-version = "0.2.1"
+version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "79690e0fb3581575eec0dd04d4907c7fa53b6ceadb4efb889f327095c0ba26ac"
+checksum = "c224378a504519c362c5efde4c138212c5fcf4e84a3073c3e9143d299a90f86b"
 
 [[package]]
 name = "syn"
