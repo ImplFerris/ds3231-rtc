@@ -94,8 +94,7 @@ where
     pub(crate) fn read_register(&mut self, register: Register) -> Result<u8, Error<E>> {
         let mut data = [0u8; 1];
         self.i2c
-            .write_read(I2C_ADDR, &[register.addr()], &mut data)
-            .map_err(Error::I2c)?;
+            .write_read(I2C_ADDR, &[register.addr()], &mut data)?;
 
         Ok(data[0])
     }
@@ -124,7 +123,9 @@ where
 
     /// Write raw bytes directly to DS3231 via I2C (register address must be first byte)
     pub(crate) fn write_raw_bytes(&mut self, data: &[u8]) -> Result<(), Error<E>> {
-        self.i2c.write(I2C_ADDR, data).map_err(Error::I2c)
+        self.i2c.write(I2C_ADDR, data)?;
+
+        Ok(())
     }
 
     /// Read-modify-write operation for setting bits

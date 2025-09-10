@@ -48,7 +48,7 @@ dependencies = [
 
 [[package]]
 name = "ds3231-rtc"
-version = "0.2.2"
+version = "0.2.3"
 dependencies = [
  "defmt",
  "embedded-hal 1.0.0",
